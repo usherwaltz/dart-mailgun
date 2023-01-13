@@ -9,7 +9,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  mail: ^0.1.0
   http: ^0.13.0
 
 dev_dependencies:
