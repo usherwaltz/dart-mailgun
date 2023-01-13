@@ -1,44 +1,55 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mail/mail.dart';
 import 'package:mailgun/mailgun.dart';
-
-void main() {
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+void main()  async{
+  TestWidgetsFlutterBinding.ensureInitialized();
+  await DotEnv().load();
+  final mailgunApiKey = DotEnv().env['MAILGUN_API_KEY'];
+  final mailgunDomain = DotEnv().env['MAILGUN_DOMAIN'];
+  final mailgunSender = DotEnv().env['MAILGUN_SENDER'];
+  final mailgunRecipient = DotEnv().env['MAILGUN_RECIPIENT'];
+  test('env variables', () {
+    expect(mailgunApiKey, isNotNull);
+    expect(mailgunDomain, isNotNull);
+    expect(mailgunSender, isNotNull);
+    expect(mailgunRecipient, isNotNull);
+  });
   test('send email success', () async {
-    final mailer = MailgunMailer(
-        domain: 'sandbox33315.mailgun.org',
-        apiKey: 'key-cf4c8800906cd84d0a7db16dbfbb186e');
+    final mailer = MailgunSender(
+        domain: mailgunDomain!,
+        apiKey: mailgunApiKey!);
     var response = await mailer.send(
-        from: 'me@dotronglong.com',
-        to: ['mailgun-6789@yopmail.com'],
+        from: mailgunSender!,
+        to: [mailgunRecipient!],
         subject: 'Hello World',
-        text: 'This is a text message ${DateTime.now().toIso8601String()}');
-    expect(response.status, SendResponseStatus.QUEUED);
+        content: Content(ContentType.text, 'This is a text message ${DateTime.now().toIso8601String()}'));
+    expect(response.status, MGResponseStatus.SUCCESS);
   });
 
   test('send email success with attachments', () async {
     Directory current = Directory.current;
-    final mailer = MailgunMailer(
-        domain: 'sandbox33315.mailgun.org',
-        apiKey: 'key-cf4c8800906cd84d0a7db16dbfbb186e');
+    final mailer = MailgunSender(
+        domain: mailgunDomain!,
+        apiKey: mailgunApiKey!);
     var response = await mailer.send(
-        from: 'me@dotronglong.com',
-        to: ['mailgun-6789@yopmail.com'],
+        from: mailgunSender!,
+        to: [mailgunRecipient!],
         subject: 'Hello World',
-        text: 'This is a text message with attachment ${DateTime.now().toIso8601String()}',
+        content: Content(ContentType.text, 'This is a text message with attachment ${DateTime.now().toIso8601String()}'),
         attachments: [File("${current.path}/test/140x100.png")]);
-    expect(response.status, SendResponseStatus.QUEUED);
+    expect(response.status, MGResponseStatus.SUCCESS);
   });
 
   test('send email fail', () async {
-    final mailer = MailgunMailer(
-        domain: 'sandbox33315.mailgun.org', apiKey: 'key-invalid');
+    final mailer = MailgunSender(
+        domain: mailgunDomain!, apiKey: 'key-invalid');
     var response = await mailer.send(
-        from: 'me@dotronglong.com',
-        to: ['mailgun-6789@yopmail.com'],
+        from: mailgunSender!,
+        to: [mailgunRecipient!],
         subject: 'Hello World',
-        text: 'This is a text message');
-    expect(response.status, SendResponseStatus.FAIL);
+        content: Content(ContentType.text, 'This is a text message ${DateTime.now().toIso8601String()}'));
+    expect(response.status, MGResponseStatus.FAIL);
   });
 }
