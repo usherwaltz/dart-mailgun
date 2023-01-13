@@ -1,5 +1,10 @@
 # flutter-mailgun
+
 Send email through Mailgun API
+
+Forked from [dotronglong](https://github.com/dotronglong/flutter-mailgun "forked repo link")'s repo as it had been unmaintaned for a while.
+
+This is still heavily in development so do keep that in mind. I'll publish the package on pub as soon as I've properly tested it. If you want to add it to your project you'll therefore have to import it from github as shown below.
 
 ## Getting Started
 
@@ -7,16 +12,17 @@ Send email through Mailgun API
 
 ```yaml
 dependencies:
-  mailgun: ^0.1.0
+  flutter_mailgun:
+    git: https://github.com/beccauwu/flutter-mailgun.git
 ```
 
 - Initialize mailer instance
 
 ```dart
-import 'package:mailgun/mailgun.dart';
+import 'package:flutter_mailgun/mailgun.dart';
 
 
-var mailgun = MailgunMailer(domain: "my-mailgun-domain", apiKey: "my-mailgun-api-key");
+var mailgun = MailgunSender(domain: "my-mailgun-domain", apiKey: "my-mailgun-api-key", regionIsEU: true);
 ```
 
 - Send plain text email
@@ -26,7 +32,7 @@ var response = await mailgun.send(
   from: from,
   to: to,
   subject: "Test email",
-  text: "Hello World");
+  content: Content.text("your text"));
 ```
 
 - Send HTML email
@@ -36,21 +42,19 @@ var response = await mailgun.send(
   from: from,
   to: to,
   subject: "Test email",
-  html: "<strong>Hello World</strong>");
+  content: Content.html("<strong>Hello World</strong>"));
 ```
 
 - Send email using template and template's variables
 
 ```dart
-var response = await mailgun.send(
+var response = await mailgun.send({
   from: from,
   to: to,
   subject: "Test email",
-  template: "my-template",
-  options: {
-    'template_variables': {
+  content: Content.template("my-template", {
       'author': 'John'
-    }
+    });
   });
 ```
 
@@ -75,3 +79,9 @@ Below are possible statuses of `response.status`:
 - `SendResponseStatus.FAIL`: failed to send email
 
 In case of failure, error's message is under `response.message`
+
+## Roadmap
+
+- [ ] Create own types
+- [ ] Add support for other Mailgun API endpoints
+- [ ] Move tests to dart tests (remove flutter sdk as a dependency)
