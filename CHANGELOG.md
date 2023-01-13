@@ -1,3 +1,9 @@
+## 0.1.3
+
+* Upgrade dependencies and SDK
+* Update tests
+* Create own types instead of the mail package
+
 ## 0.1.2
 
 * Add example in README
