@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'mailgun_types.dart';
 
-class MailgunSender {
+class MailgunSender implements IMailgunSender {
   final String domain;
   final String apiKey;
   final bool regionIsEU;
@@ -13,15 +13,15 @@ class MailgunSender {
       {required this.domain, required this.apiKey, this.regionIsEU = false});
 
   Future<MGResponse> send(
-      {String from = 'mailgun',
-      required List<String> to,
-      List<String>? cc,
-      List<String>? bcc,
-      List<dynamic> attachments = const [],
-      required String subject,
-      required Content content,
-      MailgunOptions? options,
-      bool? useDifferentFromDomain}) async {
+      {from = 'mailgun',
+      required to,
+      required subject,
+      required content,
+      cc,
+      bcc,
+      attachments = const [],
+      options,
+      useDifferentFromDomain}) async {
     var client = http.Client();
     var host = regionIsEU ? 'api.eu.mailgun.net' : 'api.mailgun.net';
     try {
@@ -45,10 +45,10 @@ class MailgunSender {
           break;
         case ContentType.template:
           request.fields['template'] = content.value;
-          request.fields['h:X-Mailgun-Variables'] = options.toString();
+          request.fields['h:X-Mailgun-Variables'] = content.templateVariables;
           break;
         default:
-          throw Exception('Unknown content type');
+          throw Exception('Invalid content type');
       }
 
       if (to.length > 0) {
