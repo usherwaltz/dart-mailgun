@@ -7,8 +7,9 @@ import 'package:mail/mail.dart';
 class MailgunMailer implements Mailer {
   final String domain;
   final String apiKey;
+  final bool regionIsEU;
 
-  MailgunMailer({this.domain, this.apiKey});
+  MailgunMailer({this.domain, this.apiKey, this.regionIsEU = false});
 
   @override
   Future<SendResponse> send(
@@ -23,13 +24,14 @@ class MailgunMailer implements Mailer {
       String template,
       Map<String, dynamic> options}) async {
     var client = http.Client();
+    var host = regionIsEU ? 'api.eu.mailgun.net' : 'api.mailgun.net';
     try {
       var request = http.MultipartRequest(
           'POST',
           Uri(
               userInfo: 'api:$apiKey',
               scheme: 'https',
-              host: 'api.mailgun.net',
+              host: host,
               path: '/v3/$domain/messages'));
       if (subject != null) {
         request.fields['subject'] = subject;
