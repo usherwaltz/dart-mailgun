@@ -6,6 +6,16 @@ Forked from [dotronglong](https://github.com/dotronglong/flutter-mailgun "forked
 
 This is still heavily in development so do keep that in mind. I'll publish the package on pub as soon as I've properly tested it. If you want to add it to your project you'll therefore have to import it from github as shown below.
 
+## Roadmap
+
+- [ ] Make MGMessageClient work
+- [ ] Create own types
+- [ ] Add support for other Mailgun API endpoints
+- [ ] Move tests to dart tests (remove flutter sdk as a dependency)
+
+
+*Please discount everything below for now, I forgot to create the develop branch and made changes that aren't yet done, I'll try to make this work asap*
+--------
 ## Getting Started
 
 - Add dependency
@@ -80,8 +90,4 @@ Below are possible statuses of `response.status`:
 
 In case of failure, error's message is under `response.message`
 
-## Roadmap
 
-- [ ] Create own types
-- [ ] Add support for other Mailgun API endpoints
-- [ ] Move tests to dart tests (remove flutter sdk as a dependency)
