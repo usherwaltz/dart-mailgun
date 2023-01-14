@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mailgun/mailgun.dart';
+import 'package:flutter_mailgun/mailgun.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 void main()  async{
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +24,7 @@ void main()  async{
         from: mailgunSender!,
         to: [mailgunRecipient!],
         subject: 'Hello World',
-        content: Content(ContentType.text, 'This is a text message ${DateTime.now().toIso8601String()}'));
+        content: Content.text('This is a text message ${DateTime.now().toIso8601String()}'));
     expect(response.status, MGResponseStatus.SUCCESS);
   });
 
@@ -37,7 +37,7 @@ void main()  async{
         from: mailgunSender!,
         to: [mailgunRecipient!],
         subject: 'Hello World',
-        content: Content(ContentType.text, 'This is a text message with attachment ${DateTime.now().toIso8601String()}'),
+        content: Content.text('This is a text message with attachment ${DateTime.now().toIso8601String()}'),
         attachments: [File("${current.path}/test/140x100.png")]);
     expect(response.status, MGResponseStatus.SUCCESS);
   });
@@ -49,7 +49,7 @@ void main()  async{
         from: mailgunSender!,
         to: [mailgunRecipient!],
         subject: 'Hello World',
-        content: Content(ContentType.text, 'This is a text message ${DateTime.now().toIso8601String()}'));
+        content: Content.text('This is a text message ${DateTime.now().toIso8601String()}'));
     expect(response.status, MGResponseStatus.FAIL);
   });
 }
