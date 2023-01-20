@@ -12,7 +12,7 @@ Help() {
     echo "h     print this help."
     echo
 }
-while getopts ":hf" option; do
+while getopts ":hfadsr" option; do
     case $option in
     h) # display Help
         Help
@@ -22,6 +22,18 @@ while getopts ":hf" option; do
         echo "env file passed as argument"
         vim "$OPTARG" -c "set ff=unix" -c ":wq"
         source "$OPTARG" >/dev/null
+        ;;
+    a) #api key
+        MAILGUN_API_KEY=$OPTARG
+        ;;
+    d) #domain
+        MAILGUN_DOMAIN=$OPTARG
+        ;;
+    s) #from
+        MAILGUN_FROM=$OPTARG
+        ;;
+    r) #to
+        MAILGUN_TO=$OPTARG
         ;;
     \?) # incorrect option
         echo "Error: Invalid option"
