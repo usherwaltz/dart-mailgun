@@ -17,6 +17,7 @@ jobs:
     environment: TestEnv
 
     steps:
+      - uses: actions/checkout@v3
       - shell: bash
         env:
           API_KEY: ${{ secrets.MAILGUN_API_KEY }}
@@ -25,7 +26,6 @@ jobs:
           TO: ${{ secrets.MAILGUN_TO }}
         run: |
           ./bin/test/configure -a "$API_KEY" -d "$DOMAIN" -s "$FROM" -r "$TO"
-      - uses: actions/checkout@v3
 
       # Note: This workflow uses the latest stable version of the Dart SDK.
       # You can specify other versions if desired, see documentation here:
