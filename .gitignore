@@ -101,3 +101,5 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+test/constants.dart
+*.code-workspace
