@@ -1,0 +1,11 @@
+filename: "test_*.dart"
+tags:
+  api:
+
+presets:
+  api:
+    include_tags: api
+    file_reporters:
+      json: reports/api_test.json
+  no_api:
+    exclude_tags: api
