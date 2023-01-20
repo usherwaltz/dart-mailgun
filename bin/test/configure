@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+constantsFile="test/test_constants.dart"
+
+Help() {
+    # Display Help
+    echo "Creates test_constants.dart file in test folder and runs tests"
+    echo
+    echo "Syntax: run [-e|h]"
+    echo "options:"
+    echo "f     env file to use. If not passed, .env file will be tried."
+    echo "h     print this help."
+    echo
+}
+while getopts ":hf" option; do
+    case $option in
+    h) # display Help
+        Help
+        exit
+        ;;
+    f) # env file
+        echo "env file passed as argument"
+        vim "$OPTARG" -c "set ff=unix" -c ":wq"
+        source "$OPTARG" >/dev/null
+        ;;
+    \?) # incorrect option
+        echo "Error: Invalid option"
+        exit
+        ;;
+    *) # other error
+        echo "no env file passed as argument"
+        if [ ! -f .env ]; then
+            echo "No .env file found"
+            exit 1
+        else
+            echo ".env file found"
+            while true; do
+                read -pr "Do you want to use it? [y/n]" useEnv
+                case $useEnv in
+                [yY][eE][sS] | [yY])
+                    echo "using .env file"
+                    ;;
+                [nN][oO] | [nN])
+                    echo "exiting"
+                    exit 1
+                    ;;
+                *)
+                    echo "invalid input"
+                    ;;
+                esac
+            done
+            # need to set ff=unix to avoid ^M in .env file
+            # it messes up formatting of the dart code created
+            vim .env -c "set ff=unix" -c ":wq"
+            source .env >/dev/null
+            if [ -z "$MAILGUN_DOMAIN" ] || [ -z "$MAILGUN_API_KEY" ] || [ -z "$MAILGUN_FROM" ] || [ -z "$MAILGUN_TO" ]; then
+                echo "invalid .env file"
+                exit 1
+            fi
+        fi
+        ;;
+    esac
+done
+
+#create test_constants.dart in test folder
+
+cat >$constantsFile <<EOF
+import 'test_config.dart';
+class TestConstants {
+    static const domain = "${MAILGUN_DOMAIN}";
+    static const apiKey = "${MAILGUN_API_KEY}";
+    static const from = "${MAILGUN_FROM}";
+    static const to = "${MAILGUN_TO}";
+}
+EOF
