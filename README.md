@@ -1,10 +1,23 @@
-# flutter-mailgun
+# dart-mailgun
 
-Send email through Mailgun API
+Mailgun API client written in dart
 
 Forked from [dotronglong](https://github.com/dotronglong/flutter-mailgun "forked repo link")'s repo as it had been unmaintaned for a while.
 
 This is still heavily in development so do keep that in mind. I'll publish the package on pub as soon as I've properly tested it. If you want to add it to your project you'll therefore have to import it from github as shown below.
+
+## Endpoint Support
+
+### `/v3/<domain>`
+
+|   | |
+|---|---|
+| `/messages`   | :white_check_mark:  |
+| `/messages.mime`   |:white_check_mark:  |
+
+### `/v4`
+
+none of the v4 endpoints are currently supported but this is definitely something i will work on.
 
 ## Getting Started
 
@@ -82,6 +95,14 @@ In case of failure, error's message is under `response.message`
 
 ## Roadmap
 
-- [ ] Create own types
-- [ ] Add support for other Mailgun API endpoints
-- [ ] Move tests to dart tests (remove flutter sdk as a dependency)
+- [ ] Add support for other endpoints:
+  - [x] `/messages.mime`
+  - [ ] `/events`
+  - [ ] `/stats`
+  - [ ] `/tags`
+  - [ ] `/bounces`
+  - [ ] `/routes`
+  - [ ] `/domains/<domain>/webhooks`
+  - [ ] `/lists`
+  - [ ] `/templates`
+- [x] Move tests to dart tests (remove flutter sdk as a dependency)
