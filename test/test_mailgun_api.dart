@@ -1,12 +1,12 @@
-import 'package:dart_mailgun/client.dart';
 import 'package:test/test.dart';
-import 'constants.dart';
+import 'package:dart_mailgun/client.dart';
+import 'package:dart_mailgun/config.dart';
 
 void main() async {
-  final domain = TestConstants.domain;
-  final apiKey = TestConstants.apiKey;
-  final from = TestConstants.from;
-  final to = TestConstants.to;
+  final domain = EnvironmentConfig.domain;
+  final apiKey = EnvironmentConfig.apiKey;
+  final from = EnvironmentConfig.from;
+  final to = EnvironmentConfig.to;
   final client = MailgunClient(domain, apiKey);
   group('MessageClient', () {
     test('send text', () async {

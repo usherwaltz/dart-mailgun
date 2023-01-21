@@ -1,0 +1,17 @@
+environment_config:
+  path: config/environment_config.dart
+  class: EnvironmentConfig
+
+  fields:
+    domain:
+      short_name: d
+      env_var: DOMAIN
+    apiKey:
+      short_name: a
+      env_var: API_KEY
+    from:
+      short_name: f
+      env_var: FROM
+    to:
+      short_name: t
+      env_var: TO
