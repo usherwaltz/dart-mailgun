@@ -30,7 +30,7 @@ class MessageOptions {
   String? _deliveryTimeOptimizePeriod;
   set deliveryTimeOptimizePeriod(int? value) {
     if (planType != MGPlanType.scale) {
-      throw Exception(
+      throw InvalidPlanException(
           'o:deliverytime-optimize-period is only available for scale plans');
     }
     if (value == null) {
@@ -57,7 +57,7 @@ class MessageOptions {
       return;
     }
     if (planType != MGPlanType.scale) {
-      throw Exception('o:time-zone-localize is only available for scale plans');
+      throw InvalidPlanException('o:time-zone-localize is only available for scale plans');
     }
     _timeZoneLocalize = DateFormat('j:m').parse(value);
   }
