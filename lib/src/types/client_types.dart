@@ -2,10 +2,16 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 
+/// [InvalidPlanException] is thrown when a plan is invalid for a given operation.
+class InvalidPlanException implements Exception {
+  final String message;
+  const InvalidPlanException(this.message);
+}
+
 class ResponseStatus {
   int code;
-  String? message;
-  ResponseStatus(this.code, this.message);
+  String? reason;
+  ResponseStatus(this.code, this.reason);
 }
 
 class MGResponse {
@@ -45,22 +51,23 @@ class MGResponse {
         var result = this.result as StreamedResponse;
         var body = await result.stream.bytesToString();
         _body = json.decode(body);
-      }
-      if (result is Response) {
+      } else if (result is Response) {
         var result = this.result as Response;
         _body = json.decode(result.body);
       }
     } catch (e) {
       if (e is FormatException) {
+        // if format exception, try to parse as string
         if (result is StreamedResponse) {
           var result = this.result as StreamedResponse;
           var body = await result.stream.bytesToString();
           _body = {'message': body};
-        }
-        if (result is Response) {
+        } else if (result is Response) {
           var result = this.result as Response;
           _body = {'message': result.body};
         }
+      } else {
+        rethrow;
       }
     } finally {
       if (_body == null) {
