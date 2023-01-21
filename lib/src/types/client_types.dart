@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 /// [InvalidPlanException] is thrown when a plan is invalid for a given operation.
 class InvalidPlanException implements Exception {
@@ -14,14 +14,18 @@ class ResponseStatus {
   ResponseStatus(this.code, this.reason);
 }
 
-class MGResponse {
+
+/// [Response] is the class returned by all the clients.
+///
+/// It contains the result of the request and some helper methods.
+class Response {
   Object result;
   Map<String, dynamic>? _body;
 
-  MGResponse(this.result);
+  Response(this.result);
   bool ok() {
-    if (result is BaseResponse) {
-      var result = this.result as BaseResponse;
+    if (result is http.BaseResponse) {
+      var result = this.result as http.BaseResponse;
       if (result.statusCode >= 200 && result.statusCode < 300) {
         return true;
       }
@@ -29,9 +33,15 @@ class MGResponse {
     return false;
   }
 
+  /// [status] returns the status code and reason phrase of the response as a [ResponseStatus] object.
+  ///
+  /// If the response is an [Exception], the status code will be 500 and the reason phrase will be the exception message.
+  ///
+  /// If the response is not an [Exception] or [http.BaseResponse],
+  /// the status code will be 500 and the reason phrase will be "Unknown Error".
   ResponseStatus status() {
-    if (result is BaseResponse) {
-      var result = this.result as BaseResponse;
+    if (result is http.BaseResponse) {
+      var result = this.result as http.BaseResponse;
       return ResponseStatus(result.statusCode, result.reasonPhrase);
     }
     if (result is Exception) {
@@ -40,30 +50,35 @@ class MGResponse {
     return ResponseStatus(500, "Unknown Error");
   }
 
+  /// [body] returns the body of the response as a [Map<String, dynamic>].
+  ///
+  /// It handles both [http.Response] and [http.StreamedResponse] types.
+  ///
+  /// Response bodies that are a string will be parsed into a map with a key of "message" and the value of the string.
   Future<Map<String, dynamic>>? get body async {
     if (_body != null) return Future.value(_body);
-    if (!(result is StreamedResponse) && !(result is Response)) {
+    if (!(result is http.StreamedResponse) && !(result is http.Response)) {
       _body = {};
       return Future.value(_body);
     }
     try {
-      if (result is StreamedResponse) {
-        var result = this.result as StreamedResponse;
+      if (result is http.StreamedResponse) {
+        var result = this.result as http.StreamedResponse;
         var body = await result.stream.bytesToString();
         _body = json.decode(body);
-      } else if (result is Response) {
-        var result = this.result as Response;
+      } else if (result is http.Response) {
+        var result = this.result as http.Response;
         _body = json.decode(result.body);
       }
     } catch (e) {
       if (e is FormatException) {
         // if format exception, try to parse as string
-        if (result is StreamedResponse) {
-          var result = this.result as StreamedResponse;
+        if (result is http.StreamedResponse) {
+          var result = this.result as http.StreamedResponse;
           var body = await result.stream.bytesToString();
           _body = {'message': body};
-        } else if (result is Response) {
-          var result = this.result as Response;
+        } else if (result is http.Response) {
+          var result = this.result as http.Response;
           _body = {'message': result.body};
         }
       } else {
@@ -82,9 +97,9 @@ class MGResponse {
 ///
 /// Any custom clients should extend this class
 /// to ensure that any methods in other classes work correctly.
-class MGBaseClient {
+class BaseClient {
   /// [client] is the http client used to make requests
-  final Client client;
+  final http.Client client;
 
   /// [domain] is the domain of the Mailgun account
   final String domain;
@@ -97,9 +112,9 @@ class MGBaseClient {
 
   /// [callback] is a callback function that is called after every request
   final Callback? callback;
-  const MGBaseClient(
+  const BaseClient(
       this.client, this.domain, this.apiKey, this.host, this.callback);
 }
 
 /// [Callback] is a typedef for a callback function used in all clients.
-typedef Callback = void Function(BaseResponse response);
+typedef Callback = void Function(http.BaseResponse response);

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import 'client_types.dart';
@@ -13,23 +13,32 @@ import 'client_types.dart';
 /// Only scale and other plans are used as the others all have the same options.
 ///
 /// For further information see the [Mailgun pricing](https://www.mailgun.com/pricing/).
-enum MGPlanType { scale, other }
+enum PlanType { scale, other }
 
 /// The possible values for the [o:tracking-clicks] option.
 ///
 /// For further information see the [Mailgun documentation](https://documentation.mailgun.com/en/latest/api-sending.html#sending).
 enum TrackingClicks { yes, no, htmlonly }
 
+/// The possible extra options in the [MessageParams] class.
 class MessageOptions {
-  /// [planType] is used to determine which options are available for the plan.
-  MGPlanType planType;
+  /// used to determine which options are available for your plan.
+  PlanType plan;
+
+  /// The [o:testmode] option.
   bool? testMode;
+
+  /// The [o:delivery-time] option.
   DateTime? deliveryTime;
+
+  /// The [o:tag] options.
   List<String>? tags;
+
+  /// The [o:dkim] option.
   bool? dkim;
   String? _deliveryTimeOptimizePeriod;
   set deliveryTimeOptimizePeriod(int? value) {
-    if (planType != MGPlanType.scale) {
+    if (plan != PlanType.scale) {
       throw InvalidPlanException(
           'o:deliverytime-optimize-period is only available for scale plans');
     }
@@ -44,6 +53,9 @@ class MessageOptions {
     _deliveryTimeOptimizePeriod = '${value}H';
   }
 
+  /// The [o:deliverytime-optimize-period] option.
+  ///
+  /// only available for scale plans.
   int? get deliveryTimeOptimizePeriod {
     if (_deliveryTimeOptimizePeriod == null) return null;
     return int.parse(_deliveryTimeOptimizePeriod!
@@ -56,13 +68,19 @@ class MessageOptions {
       _timeZoneLocalize = null;
       return;
     }
-    if (planType != MGPlanType.scale) {
-      throw InvalidPlanException('o:time-zone-localize is only available for scale plans');
+    if (plan != PlanType.scale) {
+      throw InvalidPlanException(
+          'o:time-zone-localize is only available for scale plans');
     }
     _timeZoneLocalize = DateFormat('j:m').parse(value);
   }
 
+  /// The [o:time-zone-localize] option.
+  ///
+  /// only available for scale plans.
   String? get timeZoneLocalize => _timeZoneLocalize?.toString();
+
+  /// The [o:tracking] option.
   bool? tracking;
   String? _trackingClicks;
   set trackingClicks(TrackingClicks? value) {
@@ -72,7 +90,7 @@ class MessageOptions {
     }
     _trackingClicks = value.toString().split('.').last;
   }
-
+  /// The [o:tracking-clicks] option.
   TrackingClicks? get trackingClicks {
     if (_trackingClicks != null) {
       return TrackingClicks.values.firstWhere(
@@ -81,8 +99,13 @@ class MessageOptions {
     return null;
   }
 
+  /// The [o:tracking-opens] option.
   bool? trackingOpens;
+
+  /// The [o:require-tls] option.
   bool? requireTLS;
+
+  /// The [o:skip-verification] option.
   bool? skipVerification;
   Map<String, String>? _customHeaders;
   set customHeaders(Map<String, String>? value) {
@@ -97,6 +120,7 @@ class MessageOptions {
     });
   }
 
+  /// Your custom headers.
   Map<String, String>? get customHeaders => _customHeaders;
   Map<String, String>? _customVars;
   set customVars(Map<String, String>? value) {
@@ -111,7 +135,10 @@ class MessageOptions {
     });
   }
 
+  /// Your custom variables.
   Map<String, String>? get customVars => _customVars;
+
+  /// The [recipient-variables] option.
   Map<String, String>? recipientVars;
   MessageOptions(
       {int? deliveryTimeOptimizePeriod,
@@ -119,7 +146,7 @@ class MessageOptions {
       TrackingClicks? trackingClicks,
       Map<String, String>? customHeaders,
       Map<String, String>? customVars,
-      this.planType = MGPlanType.other,
+      this.plan = PlanType.other,
       this.testMode,
       this.deliveryTime,
       this.tags,
@@ -135,7 +162,9 @@ class MessageOptions {
     this.customHeaders = customHeaders;
     this.customVars = customVars;
   }
-  MultipartRequest toRequest(MultipartRequest request) {
+
+  /// Writes options to a [http.MultipartRequest]. Returns the request.
+  http.MultipartRequest toRequest(http.MultipartRequest request) {
     var fields = {...?_customHeaders, ...?_customVars, ..._asMap()};
     request.fields.addAll(fields);
     return request;
@@ -154,9 +183,9 @@ class MessageOptions {
       if (requireTLS != null) 'o:require-tls': requireTLS!.toString(),
       if (skipVerification != null)
         'o:skip-verification': skipVerification!.toString(),
-      if (planType == MGPlanType.scale && _deliveryTimeOptimizePeriod != null)
+      if (plan == PlanType.scale && _deliveryTimeOptimizePeriod != null)
         'o:deliverytime-optimize-period': _deliveryTimeOptimizePeriod!,
-      if (planType == MGPlanType.scale && _timeZoneLocalize != null)
+      if (plan == PlanType.scale && _timeZoneLocalize != null)
         'o:time-zone-localize': _timeZoneLocalize!.toIso8601String(),
       if (recipientVars != null)
         'recipient-variables': json.encode(recipientVars),
@@ -164,6 +193,8 @@ class MessageOptions {
   }
 }
 
+
+/// Possible types of content for sending emails.
 enum MessageContentType { html, text, template }
 
 /// The [MessageContent] class represents the content of an email.
@@ -247,12 +278,13 @@ class MessageContent {
   }
 }
 
-abstract class MessageParamsBase {
-  Future<MultipartRequest> toRequest(MultipartRequest request);
+/// The base interface for message parameter classes.
+abstract class BaseMessageParams {
+  Future<http.MultipartRequest> toRequest(http.MultipartRequest request);
 }
 
 /// The [MessageParams] class is used to configure the request to the `messages` endpoint.
-class MessageParams implements MessageParamsBase {
+class MessageParams implements BaseMessageParams {
   /// The name and email address of the sender.
   ///
   /// format is `name <email>`
@@ -277,7 +309,7 @@ class MessageParams implements MessageParamsBase {
       this.attachments,
       this.inline,
       this.options});
-  Future<MultipartRequest> toRequest(MultipartRequest request) async {
+  Future<http.MultipartRequest> toRequest(http.MultipartRequest request) async {
     var fields = <String, String>{};
     fields['from'] = from;
     fields['to'] = to.join(',');
@@ -288,7 +320,7 @@ class MessageParams implements MessageParamsBase {
     if (attachments != null) {
       for (var attachment in attachments!) {
         request.files.add(
-          MultipartFile.fromBytes(
+          http.MultipartFile.fromBytes(
             'attachment',
             await attachment.readAsBytes(),
             filename: attachment.path.split('/').last,
@@ -303,29 +335,31 @@ class MessageParams implements MessageParamsBase {
   }
 }
 
-class MimeMessageParams extends MessageParamsBase {
+/// The [MimeMessageParams] class is used to configure the request to the `messages.mime` endpoint.
+class MimeMessageParams extends BaseMessageParams {
   List<String> to;
   File content;
   MimeMessageParams(this.to, this.content);
-  Future<MultipartRequest> toRequest(MultipartRequest request) async {
+  Future<http.MultipartRequest> toRequest(http.MultipartRequest request) async {
     request.fields['to'] = to.join(',');
     request.files.add(
-      await MultipartFile.fromPath('message', content.path),
+      await http.MultipartFile.fromPath('message', content.path),
     );
     return request;
   }
 }
 
-/// The [IMGMessageClient] interface defines methods for sending emails with the mailgun API.
+/// The [IMessageClient] interface defines methods for sending emails with the mailgun API.
 ///
-/// Methods:
-/// -------
-/// - [IMGMessageClient.send] sends an email using the mailgun API.
+/// Implement this interface to create a custom message client.
+///
+/// The [IMessageClient.send] should be implemented to send a message using the mailgun API,
+/// and the [IMessageClient.sendMime] method should be implemented to send MIME messages.
 ///
 /// Example:
 /// -------
 /// ```dart
-/// class MyMailgunSender extends IMGMessageClient {
+/// class MyMailgunSender extends IMessageClient {
 ///  @override
 ///   Future<dynamic> send(
 ///     ...
@@ -334,16 +368,14 @@ class MimeMessageParams extends MessageParamsBase {
 ///  }
 /// }
 /// ```
-abstract class IMGMessageClient {
+abstract class IMessageClient {
   /// Sends an email using the mailgun API.
   ///
-  /// Takes [params] - an instance of [MessageParams]
-  ///
-  /// Returns [MGResponse] - an instance of the [MGResponse] class.
-  Future<MGResponse> send(MessageParams params);
+  /// Takes [params] - an instance of [MessageParams]. Returns [Response].
+  Future<Response> send(MessageParams params);
 
   /// Optional method for sending MIME messages.
   ///
-  /// Takes [params] - an instance of [MimeMessageParams]
-  Future<MGResponse>? sendMime(MimeMessageParams params);
+  /// Takes [params] - an instance of [MimeMessageParams]. Returns [Response].
+  Future<Response>? sendMime(MimeMessageParams params);
 }

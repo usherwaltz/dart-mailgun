@@ -9,18 +9,18 @@ void main() {
   group('MGResponse', () {
     test('.ok() returns true when status code is 200', () {
       var httpResponse = http.Response('ok', 200);
-      var response = MGResponse(httpResponse);
+      var response = Response(httpResponse);
       expect(response.ok(), true);
     });
     test('.ok() returns false when status code is 400', () {
       var httpResponse = http.Response('bad request', 400);
-      var response = MGResponse(httpResponse);
+      var response = Response(httpResponse);
       expect(response.ok(), false);
     });
 
     test('.body parses json as map', () async {
       var httpResponse = http.Response('{"message": "ok"}', 200);
-      var response = MGResponse(httpResponse);
+      var response = Response(httpResponse);
       var body = await response.body;
       expect(body, isNotNull);
       expect(body, isMap);
@@ -28,7 +28,7 @@ void main() {
     });
     test('.body parses string response into map', () async {
       var httpResponse = http.Response('ok', 200);
-      var response = MGResponse(httpResponse);
+      var response = Response(httpResponse);
       var body = await response.body;
       expect(body, isNotNull);
       expect(body, isMap);
@@ -37,7 +37,7 @@ void main() {
     test('.body parses StreamedResponse json as map', () async {
       var httpResponse = http.StreamedResponse(
           Stream.fromIterable([utf8.encode('{"message": "ok"}')]), 200);
-      var response = MGResponse(httpResponse);
+      var response = Response(httpResponse);
       var body = await response.body;
       expect(body, isNotNull);
       expect(body, isMap);
@@ -46,7 +46,7 @@ void main() {
     test('.body parses StreamedResponse string response into map', () async {
       var httpResponse =
           http.StreamedResponse(Stream.fromIterable([utf8.encode('ok')]), 200);
-      var response = MGResponse(httpResponse);
+      var response = Response(httpResponse);
       var body = await response.body;
       expect(body, isNotNull);
       expect(body, isMap);
@@ -54,17 +54,17 @@ void main() {
     });
     test('.status().code returns 200 when status code is 200', () {
       var httpResponse = http.Response('ok', 200);
-      var response = MGResponse(httpResponse);
+      var response = Response(httpResponse);
       expect(response.status().code, 200);
     });
     test('.status().reason is null when status code is 200', () {
       var httpResponse = http.Response('ok', 200);
-      var response = MGResponse(httpResponse);
+      var response = Response(httpResponse);
       expect(response.status().reason, isNull);
     });
     test('.status().reason is not null when status code is 400', () {
       var httpResponse = http.Response('bad request', 400, reasonPhrase: 'bad');
-      var response = MGResponse(httpResponse);
+      var response = Response(httpResponse);
       var status = response.status();
       expect(status.reason, isNotNull);
       expect(status.reason, 'bad');
@@ -72,13 +72,13 @@ void main() {
 
     test('.status() parses exception as 500, toString()', () {
       var exception = Exception('test');
-      var response = MGResponse(exception);
+      var response = Response(exception);
       var status = response.status();
       expect(status.code, 500);
       expect(status.reason, 'Exception: test');
     });
     test('.status() resturn 500, unknown error when result is unknown', () {
-      var response = MGResponse('test');
+      var response = Response('test');
       var status = response.status();
       expect(status.code, 500);
       expect(status.reason, 'Unknown Error');
@@ -103,7 +103,7 @@ void main() {
     });
   });
   group('MessageOptions', () {
-    test('throws InvalidPlanException when trying options and plantype not set',
+    test('throws InvalidPlanException when trying locked options without scale plan',
         () {
       var opts = MessageOptions();
       expect(
@@ -122,7 +122,7 @@ void main() {
     test(
         'throws FormatException when deliverytimeoptimizeperiod is not between 24 and 72',
         () {
-      var opts = MessageOptions(planType: MGPlanType.scale);
+      var opts = MessageOptions(plan: PlanType.scale);
       expect(
         () => opts.deliveryTimeOptimizePeriod = 23,
         throwsA(

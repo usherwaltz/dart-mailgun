@@ -1,9 +1,14 @@
 import 'package:http/http.dart';
 
-export 'mailgun_types.dart' show MessageParams, MessageContent, MessageOptions;
 import 'mailgun_defaults.dart';
 import 'client/index.dart';
-export 'client/index.dart' show MGMessageClient;
+export 'types/index.dart'
+    show
+        MessageParams,
+        MessageContent,
+        MessageOptions,
+        InvalidPlanException,
+        PlanType;
 
 /// Client for communicating with the Mailgun API
 ///
@@ -14,8 +19,8 @@ class MailgunClient {
   final String _apiKey;
   final String _host;
 
-  /// configured instance of the [MGMessageClient] class
-  late final message = MGMessageClient(_client, _domain, _apiKey, _host);
+  /// configured instance of the [MessageClient] class
+  late final message = MessageClient(_client, _domain, _apiKey, _host);
   MailgunClient._(this._domain, this._apiKey, this._host);
 
   /// initialise [MailgunClient] with the eu host
