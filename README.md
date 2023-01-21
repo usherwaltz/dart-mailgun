@@ -29,69 +29,68 @@ dependencies:
     git: https://github.com/beccauwu/flutter-mailgun.git
 ```
 
-- Initialize mailer instance
+- Initialize client instance
 
 ```dart
-import 'package:flutter_mailgun/mailgun.dart';
+import 'package:dart_mailgun/client.dart';
 
 
-var mailgun = MailgunSender(domain: "my-mailgun-domain", apiKey: "my-mailgun-api-key", regionIsEU: true);
+var client = MailgunClient(domain: "my-mailgun-domain", apiKey: "my-mailgun-api-key");
 ```
 
 - Send plain text email
 
 ```dart
-var response = await mailgun.send(
+var messageClient = client.message
+var params = MessageParams(
   from: from,
   to: to,
-  subject: "Test email",
-  content: Content.text("your text"));
+  subject: 'email',
+  content: MessageContent.text('hello'),
+)
 ```
 
 - Send HTML email
 
 ```dart
-var response = await mailgun.send(
+var messageClient = client.message
+var params = MessageParams(
   from: from,
   to: to,
-  subject: "Test email",
-  content: Content.html("<strong>Hello World</strong>"));
+  subject: 'email',
+  content: MessageContent.html('<h1>hello</h1>'),
 ```
 
-- Send email using template and template's variables
+- Send email using template and template variables
 
 ```dart
-var response = await mailgun.send({
+var messageClient = client.message
+var params = MessageParams(
   from: from,
   to: to,
-  subject: "Test email",
-  content: Content.template("my-template", {
-      'author': 'John'
-    });
-  });
+  subject: 'email',
+  content: MessageContent.template('mytemplate', {'var1': 'val1'}),
 ```
 
 - Send email with attachments
 
 ```dart
-var file = new File('photo.jpg');
-var response = await mailgun.send(
+var messageClient = client.message
+var params = MessageParams(
   from: from,
   to: to,
-  subject: "Test email",
-  html: "Please check my <strong>attachment</strong>",
-  attachments: [file]);
+  subject: 'email',
+  content: MessageContent.text('hello'),
+  attachments: [File('myfile.txt')],
 ```
 
 ## Response
 
-Below are possible statuses of `response.status`:
+Responses from any clients will be an instance of the Response class.
 
-- `SendResponseStatus.OK`: mail is sent successfully
-- `SendResponseStatus.QUEUED`: mail is added to queue, for example, mailgun is not delivered mail immediately
-- `SendResponseStatus.FAIL`: failed to send email
-
-In case of failure, error's message is under `response.message`
+The response contains two methods: ok(), and status().
+ok() returns a boolean indicating a successful response,
+status() returns an instance of ResponseStatus, which contains the statuscode `status().code` and reasonphrase `status().reason`.
 
 ## Roadmap
 
