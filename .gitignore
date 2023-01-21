@@ -101,5 +101,4 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
-environment_config.dart
 *.code-workspace

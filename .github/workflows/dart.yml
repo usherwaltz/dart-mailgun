@@ -34,7 +34,7 @@ jobs:
           DOMAIN: ${{ secrets.MAILGUN_DOMAIN }}
           FROM: ${{ secrets.MAILGUN_FROM }}
           TO: ${{ secrets.MAILGUN_TO }}
-        run: sudo dart run environment_config:generate
+        run: dart run environment_config:generate
 
       # Uncomment this step to verify the use of 'dart format' on each commit.
       # - name: Verify formatting
