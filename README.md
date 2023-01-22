@@ -18,13 +18,22 @@ dependencies:
     git: https://github.com/beccauwu/flutter-mailgun.git
 ```
 
-- Initialize client instance
+- Initialise client instance
 
 ```dart
 import 'package:dart_mailgun/client.dart';
 
 
 var client = MailgunClient(domain: "my-mailgun-domain", apiKey: "my-mailgun-api-key");
+```
+
+- Initialise client with eu host
+
+```dart
+import 'package:dart_mailgun/client.dart';
+
+
+var client = MailgunClient.eu(domain: "my-mailgun-domain", apiKey: "my-mailgun-api-key");
 ```
 
 - Send plain text email
@@ -36,6 +45,7 @@ var params = MessageParams(
   to: to,
   subject: 'email',
   content: MessageContent.text('hello'),
+  )
 )
 ```
 
@@ -48,6 +58,7 @@ var params = MessageParams(
   to: to,
   subject: 'email',
   content: MessageContent.html('<h1>hello</h1>'),
+  )
 ```
 
 - Send email using template and template variables
@@ -59,6 +70,7 @@ var params = MessageParams(
   to: to,
   subject: 'email',
   content: MessageContent.template('mytemplate', {'var1': 'val1'}),
+  )
 ```
 
 - Send email with attachments
@@ -81,4 +93,17 @@ The response contains two methods: ok(), and status().
 ok() returns a boolean indicating a successful response,
 status() returns an instance of ResponseStatus, which contains the statuscode `status().code` and reasonphrase `status().reason`.
 
+The body is found in response.body and will parse both text responses and json responses.
+In the case of text, the response is found under body['message'].
 
+```dart
+var response = await client.send(params)
+if(!response.ok()){
+  //handle error
+  print(response.status().reason)
+} else {
+  var body = await response.body
+  print(body['message'])
+  // handle result
+}
+```
