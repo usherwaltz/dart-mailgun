@@ -6,7 +6,9 @@ Mailgun API client written in dart
 
 Forked from [dotronglong](https://github.com/dotronglong/flutter-mailgun "forked repo link")'s repo as it had been unmaintaned for a while.
 
-This is still heavily in development so do keep that in mind. I'll publish the package on pub as soon as I've properly tested it. If you want to add it to your project you'll therefore have to import it from github as shown below.
+## Functionality
+
+* Send messages with any parameters supported by the API
 
 ## Getting Started
 
