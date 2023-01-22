@@ -8,7 +8,7 @@ import '../types/index.dart';
 /// Methods:
 /// -------
 /// - [MessageClient.send] sends an email using the mailgun API.
-/// - [MessageClient.sendMime] - sends an email using the mailgun API.
+/// - [MessageClient.sendMime] - sends a MIME email using the mailgun API.
 class MessageClient extends BaseClient {
   late String _endpoint;
   late BaseMessageParams _params;

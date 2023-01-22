@@ -1,3 +1,15 @@
+# CHANGELOG
+
+## 1.0.1
+
+* Fix readme having wrong package reference
+
+## 1.0.0
+
+* Flutter SDK --> Dart SDK
+* Rewrite client to support all parameters on api endpoint
+* Add support for sending mime messages
+
 ## 0.1.3
 
 * Upgrade dependencies and SDK
