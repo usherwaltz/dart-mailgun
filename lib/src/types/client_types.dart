@@ -14,7 +14,6 @@ class ResponseStatus {
   ResponseStatus(this.code, this.reason);
 }
 
-
 /// [Response] is the class returned by all the clients.
 ///
 /// It contains the result of the request and some helper methods.
