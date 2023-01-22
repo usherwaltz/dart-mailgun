@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.1
+
+* Fix readme having wrong package reference
+
 ## 1.0.0
 
 * Flutter SDK --> Dart SDK

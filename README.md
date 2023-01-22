@@ -14,7 +14,7 @@ This is still heavily in development so do keep that in mind. I'll publish the p
 
 ```yaml
 dependencies:
-  dart_mailgun: ^1.0.0
+  dart_mailgun: ^1.0.1
 ```
 
 - Initialise client instance
