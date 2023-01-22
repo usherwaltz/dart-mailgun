@@ -64,13 +64,13 @@ class MessageOptions {
 
   DateTime? _timeZoneLocalize;
   set timeZoneLocalize(String? value) {
-    if (value == null) {
-      _timeZoneLocalize = null;
-      return;
-    }
     if (plan != PlanType.scale) {
       throw InvalidPlanException(
           'o:time-zone-localize is only available for scale plans');
+    }
+    if (value == null) {
+      _timeZoneLocalize = null;
+      return;
     }
     _timeZoneLocalize = DateFormat('j:m').parse(value);
   }
@@ -90,6 +90,7 @@ class MessageOptions {
     }
     _trackingClicks = value.toString().split('.').last;
   }
+
   /// The [o:tracking-clicks] option.
   TrackingClicks? get trackingClicks {
     if (_trackingClicks != null) {
@@ -192,7 +193,6 @@ class MessageOptions {
     };
   }
 }
-
 
 /// Possible types of content for sending emails.
 enum MessageContentType { html, text, template }
@@ -320,11 +320,7 @@ class MessageParams implements BaseMessageParams {
     if (attachments != null) {
       for (var attachment in attachments!) {
         request.files.add(
-          http.MultipartFile.fromBytes(
-            'attachment',
-            await attachment.readAsBytes(),
-            filename: attachment.path.split('/').last,
-          ),
+          await http.MultipartFile.fromPath('attachment', attachment.path),
         );
       }
     }
