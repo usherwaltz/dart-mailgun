@@ -1,4 +1,5 @@
 [![Unit Tests](https://github.com/beccauwu/dart-mailgun/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/beccauwu/dart-mailgun/actions/workflows/unit_tests.yml)
+[![Integration](https://github.com/beccauwu/dart-mailgun/actions/workflows/integration_test.yml/badge.svg)](https://github.com/beccauwu/dart-mailgun/actions/workflows/integration_test.yml)
 
 # dart-mailgun
 Mailgun API client written in dart
