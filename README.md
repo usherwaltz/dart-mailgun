@@ -1,21 +1,13 @@
-# flutter-mailgun
+[![Unit Tests](https://github.com/beccauwu/dart-mailgun/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/beccauwu/dart-mailgun/actions/workflows/unit_tests.yml)
 
-Send email through Mailgun API
+# dart-mailgun
+
+Mailgun API client written in dart
 
 Forked from [dotronglong](https://github.com/dotronglong/flutter-mailgun "forked repo link")'s repo as it had been unmaintaned for a while.
 
 This is still heavily in development so do keep that in mind. I'll publish the package on pub as soon as I've properly tested it. If you want to add it to your project you'll therefore have to import it from github as shown below.
 
-## Roadmap
-
-- [ ] Make MGMessageClient work
-- [ ] Create own types
-- [ ] Add support for other Mailgun API endpoints
-- [ ] Move tests to dart tests (remove flutter sdk as a dependency)
-
-
-*Please discount everything below for now, I forgot to create the develop branch and made changes that aren't yet done, I'll try to make this work asap*
---------
 ## Getting Started
 
 - Add dependency
@@ -26,68 +18,67 @@ dependencies:
     git: https://github.com/beccauwu/flutter-mailgun.git
 ```
 
-- Initialize mailer instance
+- Initialize client instance
 
 ```dart
-import 'package:flutter_mailgun/mailgun.dart';
+import 'package:dart_mailgun/client.dart';
 
 
-var mailgun = MailgunSender(domain: "my-mailgun-domain", apiKey: "my-mailgun-api-key", regionIsEU: true);
+var client = MailgunClient(domain: "my-mailgun-domain", apiKey: "my-mailgun-api-key");
 ```
 
 - Send plain text email
 
 ```dart
-var response = await mailgun.send(
+var messageClient = client.message
+var params = MessageParams(
   from: from,
   to: to,
-  subject: "Test email",
-  content: Content.text("your text"));
+  subject: 'email',
+  content: MessageContent.text('hello'),
+)
 ```
 
 - Send HTML email
 
 ```dart
-var response = await mailgun.send(
+var messageClient = client.message
+var params = MessageParams(
   from: from,
   to: to,
-  subject: "Test email",
-  content: Content.html("<strong>Hello World</strong>"));
+  subject: 'email',
+  content: MessageContent.html('<h1>hello</h1>'),
 ```
 
-- Send email using template and template's variables
+- Send email using template and template variables
 
 ```dart
-var response = await mailgun.send({
+var messageClient = client.message
+var params = MessageParams(
   from: from,
   to: to,
-  subject: "Test email",
-  content: Content.template("my-template", {
-      'author': 'John'
-    });
-  });
+  subject: 'email',
+  content: MessageContent.template('mytemplate', {'var1': 'val1'}),
 ```
 
 - Send email with attachments
 
 ```dart
-var file = new File('photo.jpg');
-var response = await mailgun.send(
+var messageClient = client.message
+var params = MessageParams(
   from: from,
   to: to,
-  subject: "Test email",
-  html: "Please check my <strong>attachment</strong>",
-  attachments: [file]);
+  subject: 'email',
+  content: MessageContent.text('hello'),
+  attachments: [File('myfile.txt')],
 ```
 
 ## Response
 
-Below are possible statuses of `response.status`:
+Responses from any clients will be an instance of the Response class.
 
-- `SendResponseStatus.OK`: mail is sent successfully
-- `SendResponseStatus.QUEUED`: mail is added to queue, for example, mailgun is not delivered mail immediately
-- `SendResponseStatus.FAIL`: failed to send email
-
-In case of failure, error's message is under `response.message`
+The response contains two methods: ok(), and status().
+ok() returns a boolean indicating a successful response,
+status() returns an instance of ResponseStatus, which contains the statuscode `status().code` and reasonphrase `status().reason`.
 
 

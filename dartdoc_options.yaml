@@ -1,0 +1,2 @@
+dartdoc:
+  nodoc: ['lib/config.dart', 'lib/config/*.dart']

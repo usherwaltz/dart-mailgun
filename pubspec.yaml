@@ -1,5 +1,5 @@
-name: flutter_mailgun
-description: A Flutter package for sending email using Mailgun API
+name: dart_mailgun
+description: A Dart package for interfacing with the Mailgun API
 version: 0.1.3
 homepage: https://github.com/beccauwu/flutter-mailgun
 
@@ -7,16 +7,8 @@ environment:
   sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
   http: ^0.13.0
-  flutter_dotenv: ^5.0.2
   intl: ^0.18.0
-
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-flutter:
-  assets:
-    - .env
+  test: ^1.22.2
+  environment_config: ^3.1.0

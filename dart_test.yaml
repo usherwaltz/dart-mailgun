@@ -1,0 +1,11 @@
+filename: "test_*.dart"
+tags:
+  unit:
+  integration: {timeout: 2x}
+
+
+presets:
+  integration:
+    include_tags: integration
+  unit:
+    paths: ["test/unit_tests"]

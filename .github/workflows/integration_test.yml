@@ -1,0 +1,26 @@
+name: Integration
+on:
+  pull_request:
+    types:
+      - opened
+jobs:
+  run_if:
+    if:  startsWith(github.head_ref, 'master/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+
+      - name: Install dependencies
+        run: dart pub get
+      - name: Generate config
+        env:
+          API_KEY: ${{ secrets.MAILGUN_API_KEY }}
+          DOMAIN: ${{ secrets.MAILGUN_DOMAIN }}
+          FROM: ${{ secrets.MAILGUN_FROM }}
+          TO: ${{ secrets.MAILGUN_TO }}
+        run: dart run environment_config:generate
+      - name: Analyze project source
+        run: dart analyze lib
+      - name: Run tests
+        run: dart test -P integration

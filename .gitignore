@@ -101,3 +101,4 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+*.code-workspace
