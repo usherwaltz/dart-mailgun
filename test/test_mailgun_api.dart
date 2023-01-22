@@ -40,5 +40,5 @@ void main() async {
       var res = await messageClient.send(opts);
       expect(res.ok(), false);
     });
-  }, tags: "api");
+  }, tags: "integration");
 }
