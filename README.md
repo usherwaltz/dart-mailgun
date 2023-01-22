@@ -1,3 +1,5 @@
+[![Dart](https://github.com/beccauwu/dart-mailgun/actions/workflows/dart.yml/badge.svg)](https://github.com/beccauwu/dart-mailgun/actions/workflows/dart.yml)
+
 # dart-mailgun
 
 Mailgun API client written in dart
