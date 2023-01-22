@@ -8,8 +8,10 @@ name: Unit Tests
 on:
   push:
     branches: [ "develop" ]
+    paths: '**.dart'
   pull_request:
     branches: [ "develop" ]
+    paths: '**.dart'
 
 jobs:
   build:
