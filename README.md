@@ -14,8 +14,7 @@ This is still heavily in development so do keep that in mind. I'll publish the p
 
 ```yaml
 dependencies:
-  flutter_mailgun:
-    git: https://github.com/beccauwu/flutter-mailgun.git
+  dart_mailgun: ^1.0.0
 ```
 
 - Initialise client instance
