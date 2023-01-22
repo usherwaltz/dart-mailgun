@@ -1,4 +1,4 @@
-[![Dart](https://github.com/beccauwu/dart-mailgun/actions/workflows/dart.yml/badge.svg)](https://github.com/beccauwu/dart-mailgun/actions/workflows/dart.yml)
+[![Unit Tests](https://github.com/beccauwu/dart-mailgun/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/beccauwu/dart-mailgun/actions/workflows/unit_tests.yml)
 
 # dart-mailgun
 
