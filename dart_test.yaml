@@ -7,7 +7,5 @@ tags:
 presets:
   integration:
     include_tags: integration
-    file_reporters:
-      json: reports/api_test.json
   unit:
     paths: ["test/unit_tests"]
