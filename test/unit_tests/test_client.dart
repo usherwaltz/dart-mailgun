@@ -91,7 +91,7 @@ void main() {
           http.MultipartRequest('POST', Uri.parse('http://localhost'));
       var options = MessageParams(
           'from', ['to'], 'subject', MessageContent.text('text'),
-          cc: ['cc'], bcc: ['bcc'], attachments: [File("${current.path}/test/140x100.png")]);
+          cc: ['cc'], bcc: ['bcc'], attachments: [File("${current.path}/test/unit_tests/140x100.png")]);
       request = await options.toRequest(request);
       expect(request.fields['from'], 'from');
       expect(request.fields['to'], 'to');
@@ -106,15 +106,21 @@ void main() {
   group('MessageOptions', () {
     test('throws InvalidPlanException when trying locked options without scale plan',
         () {
-      var opts = MessageOptions();
+
       expect(
-        () => opts.deliveryTimeOptimizePeriod = 25,
+        (){
+          var opts = MessageOptions(plan: PlanType.other);
+          opts.deliveryTimeOptimizePeriod = 24;
+          },
         throwsA(
           isA<InvalidPlanException>(),
         ),
       );
       expect(
-        () => opts.timeZoneLocalize = 'Europe/Berlin',
+        (){
+          var opts = MessageOptions(plan: PlanType.other);
+          opts.timeZoneLocalize = 'Asia/Tokyo';
+        },
         throwsA(
           isA<InvalidPlanException>(),
         ),
