@@ -1,7 +1,6 @@
 [![Unit Tests](https://github.com/beccauwu/dart-mailgun/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/beccauwu/dart-mailgun/actions/workflows/unit_tests.yml)
 
 # dart-mailgun
-
 Mailgun API client written in dart
 
 Forked from [dotronglong](https://github.com/dotronglong/flutter-mailgun "forked repo link")'s repo as it had been unmaintaned for a while.
@@ -33,8 +32,8 @@ var client = MailgunClient(domain: "my-mailgun-domain", apiKey: "my-mailgun-api-
 ```dart
 import 'package:dart_mailgun/client.dart';
 
-
 var client = MailgunClient.eu(domain: "my-mailgun-domain", apiKey: "my-mailgun-api-key");
+
 ```
 
 - Send plain text email
@@ -47,7 +46,6 @@ var params = MessageParams(
   subject: 'email',
   content: MessageContent.text('hello'),
   )
-)
 ```
 
 - Send HTML email
