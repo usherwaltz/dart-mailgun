@@ -10,6 +10,8 @@ export 'types/index.dart'
         InvalidPlanException,
         PlanType;
 
+export 'client/index.dart' show MessageClient;
+
 /// Client for communicating with the Mailgun API
 ///
 /// The client currently only supports the `<domain>/messages` endpoint.
