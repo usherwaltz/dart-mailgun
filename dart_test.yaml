@@ -1,11 +1,13 @@
 filename: "test_*.dart"
 tags:
-  api:
+  unit:
+  integration: {timeout: 2x}
+
 
 presets:
-  api:
-    include_tags: api
+  integration:
+    include_tags: integration
     file_reporters:
       json: reports/api_test.json
-  no_api:
-    exclude_tags: api
+  unit:
+    paths: ["test/unit_tests"]
