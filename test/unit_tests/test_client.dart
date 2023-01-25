@@ -52,36 +52,33 @@ void main() {
       expect(body, isMap);
       expect(body!['message'], 'ok');
     });
-    test('.status().code returns 200 when status code is 200', () {
+    test('.statusCode returns 200 when status code is 200', () {
       var httpResponse = http.Response('ok', 200);
       var response = Response(httpResponse);
-      expect(response.status().code, 200);
+      expect(response.statusCode, 200);
     });
-    test('.status().reason is null when status code is 200', () {
+    test('.reasonPhrase is null when status code is 200', () {
       var httpResponse = http.Response('ok', 200);
       var response = Response(httpResponse);
-      expect(response.status().reason, isNull);
+      expect(response.reasonPhrase, isNull);
     });
     test('.status().reason is not null when status code is 400', () {
       var httpResponse = http.Response('bad request', 400, reasonPhrase: 'bad');
       var response = Response(httpResponse);
-      var status = response.status();
-      expect(status.reason, isNotNull);
-      expect(status.reason, 'bad');
+      expect(response.reasonPhrase, isNotNull);
+      expect(response.reasonPhrase, 'bad');
     });
 
     test('.status() parses exception as 500, toString()', () {
       var exception = Exception('test');
       var response = Response(exception);
-      var status = response.status();
-      expect(status.code, 500);
-      expect(status.reason, 'Exception: test');
+      expect(response.statusCode, 500);
+      expect(response.reasonPhrase, 'Exception: test');
     });
     test('.status() resturn 500, unknown error when result is unknown', () {
       var response = Response('test');
-      var status = response.status();
-      expect(status.code, 500);
-      expect(status.reason, 'Unknown Error');
+      expect(response.statusCode, 500);
+      expect(response.reasonPhrase, 'Unknown Error');
     });
   }, tags: 'unit');
   group('MessageParams', () {

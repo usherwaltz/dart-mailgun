@@ -20,6 +20,10 @@ class ResponseStatus {
 class Response {
   Object result;
   Map<String, dynamic>? _body;
+  ResponseStatus? _status;
+  int get statusCode => _status != null ? _status!.code : status().code;
+  String? get reasonPhrase =>
+      _status != null ? _status!.reason : status().reason;
 
   Response(this.result);
   bool ok() {
@@ -39,14 +43,16 @@ class Response {
   /// If the response is not an [Exception] or [http.BaseResponse],
   /// the status code will be 500 and the reason phrase will be "Unknown Error".
   ResponseStatus status() {
+    if (_status != null) return _status!;
     if (result is http.BaseResponse) {
       var result = this.result as http.BaseResponse;
-      return ResponseStatus(result.statusCode, result.reasonPhrase);
+      _status = ResponseStatus(result.statusCode, result.reasonPhrase);
+    } else if (result is Exception) {
+      _status = ResponseStatus(500, result.toString());
+    } else {
+      _status = ResponseStatus(500, "Unknown Error");
     }
-    if (result is Exception) {
-      return ResponseStatus(500, result.toString());
-    }
-    return ResponseStatus(500, "Unknown Error");
+    return _status!;
   }
 
   /// [body] returns the body of the response as a [Map<String, dynamic>].
