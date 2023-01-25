@@ -22,7 +22,8 @@ class Response {
   Map<String, dynamic>? _body;
   ResponseStatus? _status;
   int get statusCode => _status != null ? _status!.code : status().code;
-  String? get reasonPhrase => _status != null ? _status!.reason : status().reason;
+  String? get reasonPhrase =>
+      _status != null ? _status!.reason : status().reason;
 
   Response(this.result);
   bool ok() {
@@ -46,11 +47,11 @@ class Response {
     if (result is http.BaseResponse) {
       var result = this.result as http.BaseResponse;
       _status = ResponseStatus(result.statusCode, result.reasonPhrase);
-    }
-    if (result is Exception) {
+    } else if (result is Exception) {
       _status = ResponseStatus(500, result.toString());
+    } else {
+      _status = ResponseStatus(500, "Unknown Error");
     }
-    _status = ResponseStatus(500, "Unknown Error");
     return _status!;
   }
 
