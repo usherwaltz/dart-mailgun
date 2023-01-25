@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.2
+
+* Fixes in response class
+
 ## 1.0.1
 
 * Fix readme having wrong package reference
