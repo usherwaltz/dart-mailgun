@@ -3,6 +3,8 @@ on:
   pull_request:
     types:
       - opened
+    paths:
+      - '**_client.dart'
 jobs:
   build:
     runs-on: ubuntu-latest
