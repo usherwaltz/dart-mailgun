@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.3
+
+* Move from intl datetime to regex in MessageOptions.timezonelocalize
+
 ## 1.0.2
 
 * Fixes in response class
