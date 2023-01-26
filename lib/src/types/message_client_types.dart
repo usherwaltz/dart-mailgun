@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 
 import 'client_types.dart';
 
@@ -61,24 +60,35 @@ class MessageOptions {
     return int.parse(_deliveryTimeOptimizePeriod!
         .substring(0, _deliveryTimeOptimizePeriod!.length - 1));
   }
+  String? _timeZoneLocalize;
 
-  DateTime? _timeZoneLocalize;
+  /// The [o:time-zone-localize] option.
+  ///
+  /// format: `HH:mm`, `hh:mmaa` - eg. `13:00`, `1:00pm`
+  ///
+  /// throws [FormatException] if the format is incorrect.
+  ///
+  /// throws [InvalidPlanException] if the plan is not a scale plan.
   set timeZoneLocalize(String? value) {
     if (plan != PlanType.scale) {
       throw InvalidPlanException(
           'o:time-zone-localize is only available for scale plans');
     }
-    if (value == null) {
-      _timeZoneLocalize = null;
-      return;
+    //check format
+    if (value != null) {
+      if (!RegExp(r'^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$').hasMatch(value) &&
+          !RegExp(r'^([0-1]?[0-9]|2[0-3]):[0-5][0-9][ap]m$').hasMatch(value)) {
+        throw FormatException(
+            'timeZoneLocalize must be in the format HH:mm or hh:mmaa', value);
+      }
     }
-    _timeZoneLocalize = DateFormat('j:m').parse(value);
+    _timeZoneLocalize = value;
   }
 
   /// The [o:time-zone-localize] option.
   ///
   /// only available for scale plans.
-  String? get timeZoneLocalize => _timeZoneLocalize?.toString();
+  String? get timeZoneLocalize => _timeZoneLocalize;
 
   /// The [o:tracking] option.
   bool? tracking;
@@ -187,7 +197,7 @@ class MessageOptions {
       if (plan == PlanType.scale && _deliveryTimeOptimizePeriod != null)
         'o:deliverytime-optimize-period': _deliveryTimeOptimizePeriod!,
       if (plan == PlanType.scale && _timeZoneLocalize != null)
-        'o:time-zone-localize': _timeZoneLocalize!.toIso8601String(),
+        'o:time-zone-localize': _timeZoneLocalize!,
       if (recipientVars != null)
         'recipient-variables': json.encode(recipientVars),
     };

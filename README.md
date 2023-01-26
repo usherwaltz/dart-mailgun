@@ -27,7 +27,7 @@ Forked from [dotronglong](https://github.com/dotronglong/flutter-mailgun "forked
 
 ```yaml
 dependencies:
-  dart_mailgun: ^1.0.2
+  dart_mailgun: ^1.0.3
 ```
 
 ### Initialising client
