@@ -140,5 +140,32 @@ void main() {
         ),
       );
     });
+    test('throws FormatException if timeZoneLocalize is not HH:mm or hh:mmaa',
+        () {
+      var opts = MessageOptions(plan: PlanType.scale);
+      expect(
+        () => opts.timeZoneLocalize = 'Asia/Tokyo',
+        throwsA(
+          isA<FormatException>(),
+        ),
+      );
+      expect(
+        () => opts.timeZoneLocalize = '09:00:00',
+        throwsA(
+          isA<FormatException>(),
+        ),
+      );
+    });
+    test('does not throw FormatException if timeZoneLocalize is HH:mm or hh:mmaa', () {
+      var opts = MessageOptions(plan: PlanType.scale);
+      expect(
+        () => opts.timeZoneLocalize = '09:00',
+        returnsNormally,
+      );
+      expect(
+        () => opts.timeZoneLocalize = '09:00am',
+        returnsNormally,
+      );
+    });
   }, tags: 'unit');
 }
